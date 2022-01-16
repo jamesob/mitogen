@@ -168,6 +168,7 @@ if PY3:
     BufferType = lambda buf, start: memoryview(buf)[start:]
     integer_types = (int,)
     iteritems, iterkeys, itervalues = dict.items, dict.keys, dict.values
+    from types import SimpleNamespace
 else:
     import cPickle as pickle
     import thread
@@ -179,6 +180,7 @@ else:
     UnicodeType = unicode
     integer_types = (int, long)
     iteritems, iterkeys, itervalues = dict.iteritems, dict.iterkeys, dict.itervalues
+    SimpleNamespace = None
 
 AnyTextType = (BytesType, UnicodeType)
 
@@ -902,6 +904,8 @@ class Message(object):
             return self._unpickle_bytes
         elif module == '__builtin__' and func == 'bytes':
             return BytesType
+        elif SimpleNamespace is not None and module == 'types' and func == 'SimpleNamespace':
+            return SimpleNamespace
         raise StreamError('cannot unpickle %r/%r', module, func)
 
     @property
