@@ -1498,6 +1498,7 @@ class Connection(object):
             'blacklist': self._router.get_module_blacklist(),
             'max_message_size': self.options.max_message_size,
             'version': mitogen.__version__,
+            'pickle_whitelist_patterns': mitogen.core._PICKLE_GLOBAL_WHITELIST,
         }
 
     def get_preamble(self):
