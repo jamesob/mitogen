@@ -188,7 +188,7 @@ class Options(mitogen.parent.Options):
                  check_host_keys='enforce', password=None, identity_file=None,
                  compression=True, ssh_args=None, keepalive_enabled=True,
                  keepalive_count=3, keepalive_interval=15,
-                 identities_only=True, ssh_debug_level=None, **kwargs):
+                 identities_only=True, ssh_debug_level=None, forward_agent=False, **kwargs):
         super(Options, self).__init__(**kwargs)
 
         if check_host_keys not in ('accept', 'enforce', 'ignore'):
@@ -205,6 +205,7 @@ class Options(mitogen.parent.Options):
         self.keepalive_enabled = keepalive_enabled
         self.keepalive_count = keepalive_count
         self.keepalive_interval = keepalive_interval
+        self.forward_agent = forward_agent
         if ssh_path:
             self.ssh_path = ssh_path
         if ssh_args:
@@ -295,6 +296,9 @@ class Connection(mitogen.parent.Connection):
             ]
         if self.options.ssh_args:
             bits += self.options.ssh_args
+        if self.options.forward_agent:
+            bits += ['-A']
+
         bits.append(self.options.hostname)
         base = super(Connection, self).get_boot_command()
 
